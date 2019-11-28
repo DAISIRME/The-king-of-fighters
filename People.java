@@ -97,8 +97,7 @@ public class People extends GameObject {
     	this.width = img.getWidth(null);
     	this.height = img.getHeight(null);
     	y = inity-(height-initheight);
-//    	System.out.println(height-initheight);
-//    	System.out.println(y);
+
     	System.out.println(this.x);
     	
     	if(i<73)
