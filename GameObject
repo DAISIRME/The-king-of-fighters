@@ -1,0 +1,39 @@
+ package cn.game.ddh;
+
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+
+public class GameObject {
+	int x,y;
+	int width,height;
+	Image img;
+	int speed;
+	int[] a = new int[10];
+	int[] b = new int[10];
+	
+	public void paint(Graphics g) {
+		g.drawImage(img, x, y, width, height, null);
+	}
+	  public GameObject(Image img, int x, int y) {
+	        this.img = img;
+	        this.x = x;
+	        this.y = y;
+	    }
+	     
+	    public GameObject(Image img, int x, int y, int speed, int width,
+	            int height) {
+	        this.img = img;
+	        this.x = x;
+	        this.y = y;
+	        this.speed = speed;
+	        this.width = width;
+	        this.height = height;
+	    }
+	     
+	    public GameObject() {
+	    }
+	    public Rectangle getRect(){
+	        return  new Rectangle((int)x,(int) y, width, height);
+	    }   
+}
