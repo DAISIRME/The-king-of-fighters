@@ -1,0 +1,86 @@
+package cn.game.ddh;
+
+import java.awt.Image;
+//import java.util.Set;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import java.awt.Frame;
+
+import java.awt.Graphics;
+//import java.awt.Frame;
+
+public class GameFrame2 extends Frame {
+	Image bgImage = GameUtil.getImage("Images/bg-03.jpg");
+	Image obImage = GameUtil.getImage("Images/Obstacle01.png");
+	Obstacle ob = new Obstacle(obImage, 50, 20);
+	People people1 = new People(0, 400,200,300);
+	People2 people2 = new People2(800, 400, 200, 300);
+	private Image offScreenImage = null;
+	public void update(Graphics g) {
+	    if(offScreenImage == null)
+	    offScreenImage = this.createImage(500,500);//这是游戏窗口的宽度和高度  
+	    Graphics gOff = offScreenImage.getGraphics();
+	    paint(gOff);
+	    g.drawImage(offScreenImage, 0, 0, null);
+	}   
+	public void paint(Graphics g) {
+		g.drawImage(bgImage, 0, 0, 500, 500, null);
+//		obJ.paintMyself(g);
+		people1.paintMyself(g);
+		people2.paintMyself(g);
+		boolean hit = people1.getRect().intersects(people2.getRect());
+		if(hit)
+		{
+			people2.live = false;
+		}
+		
+	}
+	
+	class PaintThread extends Thread {
+        public void run(){
+            while(true){
+                repaint();
+                try {
+                    Thread.sleep(40); //1s = 1000ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }   
+            }
+        }
+    } 
+	class KeyMonitor extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            people1.addDirection(e);
+            people2.addDirection(e);
+        }
+ 
+        @Override
+        public void keyReleased(KeyEvent e) {
+            people1.minusDirection(e);
+            people2.minusDirection(e);
+        }
+    }
+	public void CreateFrame() {
+		setTitle("勇夺果实");
+		setSize(500,500);
+		setVisible(true);
+		setLocation(200,200);	
+		addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) 
+            {
+                System.exit(0);
+            }
+        });
+		new PaintThread().start();
+		addKeyListener(new KeyMonitor());
+	}
+	public static void main(String[] args) {
+		GameFrame2 frame1 = new GameFrame2();
+		frame1.CreateFrame();
+	}
+}
