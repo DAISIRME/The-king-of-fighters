@@ -10,14 +10,13 @@ public class People extends GameObject {
 	static	int i = 2;
 	static int speed = 20;
 	boolean left,right,up,down;
-	boolean draw = true;
-	boolean J = false;
+	boolean draw = true;//draw变量用于判断出场动画是否已经播放完毕
+	boolean J = false;//判断是否按下J键
 	int inity;
 	int initheight;
 
 	
 	public void addDirection(KeyEvent e) {
-//		System.out.println("正常");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_A:
 			left = true;
@@ -38,14 +37,12 @@ public class People extends GameObject {
 		}	
 	}
 	public void minusDirection(KeyEvent e) {
-//		System.out.println("正常");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_A:
 			left = false;
 			break;
 		case KeyEvent.VK_D:
 			right = false;
-//			System.out.println("往右");
 			break;
 		case KeyEvent.VK_W:
 			up = false;
@@ -61,17 +58,20 @@ public class People extends GameObject {
 	}
 	public void paintMyself(Graphics g)
 	{	
-	img = GameUtil.getImage("Images/图层 1.png");
-    if (left) {
+	img = GameUtil.getImage("Images/图层 1.png");//设置图片资源
+    if (left) 
+    {
         x -= speed;
     }
-    if (right) {
+    if (right) 
+    {
         x += speed;
     }
     if (up) {
     	y -= speed;
     	}
-    if (down) {
+    if (down) 
+    {
         y += speed;
     }
     if(J)
@@ -83,10 +83,8 @@ public class People extends GameObject {
     img = GameUtil.getImage("Images/图层 1.png");
     inity = y;
     initheight = height;
-//	System.out.println(y);
-
-	this.width = img.getWidth(null);
-	this.height = img.getHeight(null);
+    this.width = img.getWidth(null);
+    this.height = img.getHeight(null);
     g.drawImage(img, x, y ,width , height, null);
 	}
 	}
@@ -96,10 +94,8 @@ public class People extends GameObject {
     	img = GameUtil.getImage("Images/图层 "+i+".png");
     	this.width = img.getWidth(null);
     	this.height = img.getHeight(null);
-    	y = inity-(height-initheight);
-
+    	y = inity-(height-initheight);//使得图片的最下边的Y坐标始终为一个定值，这样展示出来的效果才好。
     	System.out.println(this.x);
-    	
     	if(i<73)
     		i++;
     	if(!draw)
