@@ -1,0 +1,137 @@
+package cn.game.ddh;
+
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+
+
+public class People2 extends GameObject{
+	static int y = 400;
+	static int x = 300;
+	static	int i = 3;
+	static int speed = 20;
+	boolean left,right,up,down;
+	boolean draw = true;
+	static int j =1;
+	boolean J = false;
+	boolean live = true;
+	int inity;
+	int initheight;
+	int initwidth;
+	int initx;	
+	public void addDirection(KeyEvent e) {
+//		System.out.println("正常");
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			left = true;
+			break;
+		case KeyEvent.VK_RIGHT:
+			right = true;
+			break;
+		case KeyEvent.VK_UP:
+			up = true;
+			break;
+		case KeyEvent.VK_DOWN:
+			down = true;
+			break;	
+		case KeyEvent.VK_J:
+			J = true;
+		default:
+			break;
+		}	
+	}
+	public void minusDirection(KeyEvent e) {
+//		System.out.println("正常");
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			left = false;
+			break;
+		case KeyEvent.VK_RIGHT:
+			right = false;
+//			System.out.println("往右");
+			break;
+		case KeyEvent.VK_UP:
+			up = false;
+			break;
+		case KeyEvent.VK_DOWN:
+			down = false;
+			break;	
+		case KeyEvent.VK_J:
+			break;
+		default:
+			break;
+		}
+	}
+	public void paintMyself(Graphics g)
+	{	
+	img = GameUtil.getImage("Images/A 1.png");
+
+    if (left) {
+        x -= speed;
+    }
+    if (right) {
+        x += speed;
+    }
+    if (up) {
+    	y -= speed;
+    	}
+    if (down) {
+        y += speed;
+    }
+    if(J)
+    {
+    	attack(g);
+    }
+    if(draw)
+    {
+    	System.out.println(i);
+
+    if(j<47)
+    {img = GameUtil.getImage("Images/A-2-"+j+".png");
+    j++;
+    }
+    inity = y;
+    initx = x;
+    initheight = height;
+    initwidth = width;
+
+    g.drawRect(x, y,width,height);
+	if(j==47)
+		j=1;
+//	System.out.println(y);
+
+	this.width = img.getWidth(null);
+	this.height = img.getHeight(null);
+	g.drawImage(img, x , y ,this.width,this.height, null);
+	}
+	}
+    public void attack(Graphics g)
+    {	
+    	draw = false;
+    	if (i<44) {
+    	img = GameUtil.getImage("Images/A "+i+".png");
+
+		}
+    	this.width = img.getWidth(null);
+    	this.height = img.getHeight(null);
+    	y = inity-(height-initheight);
+    	x = initx-(width-initwidth);
+
+    	if(i < 44)
+    	i++;
+    	if(i == 44)
+    	{
+    	draw = true;
+    	i=1;
+    	}
+    	if(!draw)
+    	g.drawImage(img, x , y ,this.width,this.height, null);
+    	g.drawRect(x, y,width,height);
+    	System.out.println(x);
+    }
+
+	
+	public People2(int x,int y,int width,int height ) {
+		this.width = width;
+		this.height = height;
+	}
+}
