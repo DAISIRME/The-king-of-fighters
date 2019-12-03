@@ -1,23 +1,31 @@
 package cn.game.ddh;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-
-
 public class People2 extends GameObject{
 	static int y = 400;
 	static int x = 300;
-	static	int i = 3;
+	static	int i = 1;
 	static int speed = 20;
 	boolean left,right,up,down;
 	boolean draw = true;
 	static int j =1;
+//	boolean attackdone = false;
 	boolean J = false;
-	boolean live = true;
+	boolean live;
 	int inity;
 	int initheight;
 	int initwidth;
-	int initx;	
+	int initx;
+	Rectangle L;
+//	static {
+//		for(int i = 0;i<15;i++)
+//		{
+//		imgs[i] = GameUtil.getImage("images/e"+(i+1)+".png");
+//		}
+//		}
+	
 	public void addDirection(KeyEvent e) {
 //		System.out.println("正常");
 		switch (e.getKeyCode()) {
@@ -63,75 +71,123 @@ public class People2 extends GameObject{
 	}
 	public void paintMyself(Graphics g)
 	{	
-	img = GameUtil.getImage("Images/A 1.png");
-
-    if (left) {
+//	for (int i = 0; i < imgs.length; i++,y-=2)
+//	{
+//			System.out.println("正常");
+//			g.drawImage(imgs[i], x, y, width, height, null);
+//		}
+    if (left&&live&&x>this.width) {
         x -= speed;
     }
-    if (right) {
+    if (right&&live&&x<500-this.width-20) {
         x += speed;
     }
-    if (up) {
+    if (up&&live&&y>this.height-20) {
     	y -= speed;
     	}
-    if (down) {
+    if (down&&live&&y<500-this.height-20) {
         y += speed;
     }
-    if(J)
+    if(!live)
     {
-    	attack(g);
+    	被击倒(g);
     }
-    if(draw)
+    if(J&&live)
     {
-    	System.out.println(i);
-
-    if(j<47)
-    {img = GameUtil.getImage("Images/A-2-"+j+".png");
-    j++;
+    	丢扇子(g);
+    }
+    if(draw&&live)
+    {  
+    if(i<19)
+    {
+    img = GameUtil.getImage("Images/不知火舞-站立"+i+".png");
+//    System.out.println(draw);
     }
     inity = y;
     initx = x;
     initheight = height;
     initwidth = width;
-
     g.drawRect(x, y,width,height);
-	if(j==47)
-		j=1;
+	
 //	System.out.println(y);
 
 	this.width = img.getWidth(null);
 	this.height = img.getHeight(null);
-	g.drawImage(img, x , y ,this.width,this.height, null);
+	g.drawImage(img, x , y ,this.width ,this.height , null);
+	
+
+	if(i<19)
+    	i++;
+    if(i==19)
+    	i=1;
+    }
+//    System.out.println(i);
+
+    if(i==1)
+    {
+    	System.out.println("正常J");
+    	L = new Rectangle(x,y,width,height);
+    }
 	}
-	}
-    public void attack(Graphics g)
+    public void 丢扇子(Graphics g)
     {	
     	draw = false;
-    	if (i<44) {
-    	img = GameUtil.getImage("Images/A "+i+".png");
+    	
+    	if (i<29) {
+    	img = GameUtil.getImage("Images/不知火舞-丢扇子"+i+".png");
 
 		}
+		
+//    	img = GameUtil.getImage("Images/A "+i+".png");
     	this.width = img.getWidth(null);
     	this.height = img.getHeight(null);
     	y = inity-(height-initheight);
     	x = initx-(width-initwidth);
 
-    	if(i < 44)
-    	i++;
-    	if(i == 44)
-    	{
-    	draw = true;
-    	i=1;
-    	}
+//    	System.out.println(height-initheight);
+    	
     	if(!draw)
     	g.drawImage(img, x , y ,this.width,this.height, null);
+//    	if(i==1)
+//    	O = this.getRect();
+//    	System.out.println(this.x);
+    	if(i < 29)
+        	i++;
+        	if(i == 29)
+        	{
+        	draw = true;
+        	i=1;
+//        	attackdone = true;
+        	J = false;
+        	}
     	g.drawRect(x, y,width,height);
-    	System.out.println(x);
+//    	System.out.println(x);
+    	System.out.println(i);
     }
-
-	
+    public void 被击倒(Graphics g) {
+		draw = false;
+		if (i<20) {
+	    	img = GameUtil.getImage("Images/不知火舞-被击倒"+i+".png");
+			}
+		   	this.width = img.getWidth(null);
+	    	this.height = img.getHeight(null);
+	    	y = inity-(height-initheight);
+	    	x = initx-(width-initwidth);
+	    	if(i < 20)
+	    	i++;
+	    	if(i == 20)
+	    	{
+	    	draw = true;
+	    	i=1;
+	    	live = true;
+	    	System.out.println("LIVE=TRUE");
+	    	}
+	    	if(!draw)
+	    	g.drawImage(img, x , y ,this.width,this.height, null);
+	    	g.drawRect(x, y,width,height);
+    }
 	public People2(int x,int y,int width,int height ) {
 		this.width = width;
 		this.height = height;
-	}
+		}
 }
