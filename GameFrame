@@ -1,50 +1,114 @@
-package cn.game.ddh;
+package cn.game.ddh; 
 
 import java.awt.Image;
+import java.awt.Rectangle;
 //import java.util.Set;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+import java.time.Year;
 import java.awt.Frame;
-
 import java.awt.Graphics;
 //import java.awt.Frame;
 
-public class GameFrame2 extends Frame {
+public class GameFrame1 extends Frame {
 	Image bgImage = GameUtil.getImage("Images/bg-03.jpg");
 	Image obImage = GameUtil.getImage("Images/Obstacle01.png");
 	Obstacle ob = new Obstacle(obImage, 50, 20);
-	People people1 = new People(0, 400,200,300);
-	People2 people2 = new People2(800, 400, 200, 300);
+	People people1 = new People(50,250,150,200);
+	People2 people2 = new People2(400, 250, 150, 200);
+	Rectangle K;
+	Rectangle J;
+	int county=0;
+	int x=150;
+//	int y=210;
+	int count_activity=0;
+	int[] y = new int[2];
+//	int[] y = [1,2];
 	private Image offScreenImage = null;
 	public void update(Graphics g) {
 	    if(offScreenImage == null)
-	    offScreenImage = this.createImage(500,500);//这是游戏窗口的宽度和高度  
+	    offScreenImage = this.createImage(800,500);//这是游戏窗口的宽度和高度
 	    Graphics gOff = offScreenImage.getGraphics();
 	    paint(gOff);
 	    g.drawImage(offScreenImage, 0, 0, null);
 	}   
 	public void paint(Graphics g) {
-		g.drawImage(bgImage, 0, 0, 500, 500, null);
-//		obJ.paintMyself(g);
-		people1.paintMyself(g);
-		people2.paintMyself(g);
-		boolean hit = people1.getRect().intersects(people2.getRect());
-		if(hit)
+		g.drawImage(bgImage, 0, 0, 800, 500, null);
+		switch (count_activity) {
+		case 0:
+			y[0] = 210;
+			y[1] = 360;
+			Image gameoverImage = GameUtil.getImage("Images/Gameover.png");
+			Image jinruImage = GameUtil.getImage("Images/jinru.png");
+			Image tuichuImage = GameUtil.getImage("Images/tuichu.png");
+			Image hengxianImage = GameUtil.getImage("Images/hengxian.png");
+			g.drawImage(bgImage, 0, 0, 800, 500, null);
+//			g.drawString("按3进入拳皇游戏",200, 200);
+			g.drawImage(jinruImage, 330, 120, 200, 100, null);
+			g.drawImage(tuichuImage, 330, 280, 200, 100, null);
+			g.drawImage(hengxianImage, 325, y[county], 220,10, null);
+//			g.drawImage(gameoverImage, x, y, 200, 100, null);
+			break;
+		case 1:
+			people1.paintMyself(g);
+		    people2.paintMyself(g);
+		    J = people2.L;
+		if(people1.hitlength==230||people2.hitlength==230)
 		{
-			people2.live = false;
+			Image gameoverImage1 = GameUtil.getImage("Images/Gameover.png");
+			g.drawImage(gameoverImage1, 300, 200, null);
 		}
-		
+		try {
+			boolean hit = people2.L.intersects(people1.K);
+			if(hit&&people1.attack)
+			{	
+				people2.live = false;
+			}
+			if(hit&&people2.attack)
+			{
+				people1.live = false;
+			}
+			if(!people1.live&&!people2.live )
+			{
+				people1.live = true;
+				people2.live= true;
+			}
+		} catch (Exception e)
+		{
+			System.out.println("J不存在");
+		}
+		default:
+			break;
+			}
 	}
-	
+	public void count(KeyEvent e) {
+		if(count_activity==0) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_ENTER:
+			if(county==0)
+			count_activity++;
+			else if(county==1)
+				System.exit(0);
+			break;
+		case KeyEvent.VK_UP:
+			county = 0;
+			break;
+		case KeyEvent.VK_DOWN:
+			county = 1;
+			break;
+		default:
+			break;
+		}
+		}
+	}
 	class PaintThread extends Thread {
         public void run(){
             while(true){
                 repaint();
                 try {
-                    Thread.sleep(40); //1s = 1000ms
+                    Thread.sleep(30); //1s = 1000ms
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }   
@@ -55,9 +119,10 @@ public class GameFrame2 extends Frame {
         @Override
         public void keyPressed(KeyEvent e) {
             people1.addDirection(e);
-            people2.addDirection(e);
+            people2.addDirection(e);	
+            if(count_activity==0)
+            count(e);
         }
- 
         @Override
         public void keyReleased(KeyEvent e) {
             people1.minusDirection(e);
@@ -65,8 +130,8 @@ public class GameFrame2 extends Frame {
         }
     }
 	public void CreateFrame() {
-		setTitle("勇夺果实");
-		setSize(500,500);
+		setTitle("戴东晖的拳皇游戏");
+		setSize(800,500);
 		setVisible(true);
 		setLocation(200,200);	
 		addWindowListener(new WindowAdapter() {
@@ -77,10 +142,11 @@ public class GameFrame2 extends Frame {
             }
         });
 		new PaintThread().start();
+		people2.live = true;
 		addKeyListener(new KeyMonitor());
 	}
 	public static void main(String[] args) {
-		GameFrame2 frame1 = new GameFrame2();
+		GameFrame1 frame1 = new GameFrame1();
 		frame1.CreateFrame();
 	}
 }
