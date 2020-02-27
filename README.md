@@ -9,10 +9,17 @@ when you first start the game
 
 
 
+press [enter] and you'll enter the game   
 after entering the game
+
+
+
 ![after entering the game](https://github.com/DAISIRME/Quanhuang/blob/master/qqjietu.png)
 
 
 
 when the right person presses [K]
+
+
+
 ![when the right person presses [K] ](https://github.com/DAISIRME/Quanhuang/blob/master/PIC2.png)
