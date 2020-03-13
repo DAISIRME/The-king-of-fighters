@@ -2,7 +2,6 @@ package cn.game.ddh;
 
 import java.awt.Image;
 import java.awt.Rectangle;
-//import java.util.Set;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -10,57 +9,73 @@ import java.awt.event.WindowEvent;
 import java.time.Year;
 import java.awt.Frame;
 import java.awt.Graphics;
-//import java.awt.Frame;
-
-public class GameFrame1 extends Frame {
+public class GameFrame1 extends Frame 
+	{
 	Image bgImage = GameUtil.getImage("Images/bg-03.jpg");
 	Image obImage = GameUtil.getImage("Images/Obstacle01.png");
 	Obstacle ob = new Obstacle(obImage, 50, 20);
-	People people1 = new People(50,250,150,200);
-	People2 people2 = new People2(400, 250, 150, 200);
+	People people1 = new People(70,270,150,200);
+	People2 people2 = new People2(550, 330, 150, 200);
 	Rectangle K;
 	Rectangle J;
 	int county=0;
+	int judgeDeath = 0;
+	Image hengxianImage;
 	int x=150;
-//	int y=210;
 	int count_activity=0;
+	int count2 = 0;
 	int[] y = new int[2];
-//	int[] y = [1,2];
 	private Image offScreenImage = null;
-	public void update(Graphics g) {
+	public void update(Graphics g) 
+	{
 	    if(offScreenImage == null)
 	    offScreenImage = this.createImage(800,500);//这是游戏窗口的宽度和高度
 	    Graphics gOff = offScreenImage.getGraphics();
 	    paint(gOff);
 	    g.drawImage(offScreenImage, 0, 0, null);
 	}   
-	public void paint(Graphics g) {
+	public void paint(Graphics g)
+	{
 		g.drawImage(bgImage, 0, 0, 800, 500, null);
-		switch (count_activity) {
+		//judge which image should be drawn.
+		switch (count_activity)
+		{
 		case 0:
 			y[0] = 210;
 			y[1] = 360;
 			Image gameoverImage = GameUtil.getImage("Images/Gameover.png");
 			Image jinruImage = GameUtil.getImage("Images/jinru.png");
 			Image tuichuImage = GameUtil.getImage("Images/tuichu.png");
-			Image hengxianImage = GameUtil.getImage("Images/hengxian.png");
+			hengxianImage = GameUtil.getImage("Images/hengxian.png");
 			g.drawImage(bgImage, 0, 0, 800, 500, null);
-//			g.drawString("按3进入拳皇游戏",200, 200);
 			g.drawImage(jinruImage, 330, 120, 200, 100, null);
 			g.drawImage(tuichuImage, 330, 280, 200, 100, null);
 			g.drawImage(hengxianImage, 325, y[county], 220,10, null);
-//			g.drawImage(gameoverImage, x, y, 200, 100, null);
 			break;
 		case 1:
 			people1.paintMyself(g);
 		    people2.paintMyself(g);
 		    J = people2.L;
-		if(people1.hitlength==230||people2.hitlength==230)
+		    //blood is empty. Show "Game over" Image.
+		if(people1.hitlength==230||people2.hitlength>=230)
 		{
+			Image startAgainImage  = GameUtil.getImage("Images/Start Again.png");
 			Image gameoverImage1 = GameUtil.getImage("Images/Gameover.png");
-			g.drawImage(gameoverImage1, 300, 200, null);
+			people1.live=false;
+			people2.live=false;		
+			judgeDeath = 1;
+			if(count2 == 0)
+			{
+			g.drawImage(gameoverImage1, 300, 200, 220,100,null);
+			}
+			else if(count2 == 1)
+			{	
+				g.drawImage(startAgainImage, 300, 200, 220,100, null);
+				g.drawImage(hengxianImage, 300, 250, 220,10, null);
+			}
 		}
-		try {
+		try
+		{
 			boolean hit = people2.L.intersects(people1.K);
 			if(hit&&people1.attack)
 			{	
@@ -75,22 +90,26 @@ public class GameFrame1 extends Frame {
 				people1.live = true;
 				people2.live= true;
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			System.out.println("J不存在");
 		}
 		default:
 			break;
-			}
+		}
 	}
-	public void count(KeyEvent e) {
-		if(count_activity==0) {
-		switch (e.getKeyCode()) {
+	public void count(KeyEvent e) 
+	{
+		if(count_activity==0) 
+		{
+		switch (e.getKeyCode()) 
+		{
 		case KeyEvent.VK_ENTER:
 			if(county==0)
 			count_activity++;
 			else if(county==1)
-				System.exit(0);
+			System.exit(0);
 			break;
 		case KeyEvent.VK_UP:
 			county = 0;
@@ -102,25 +121,49 @@ public class GameFrame1 extends Frame {
 			break;
 		}
 		}
-	}
-	class PaintThread extends Thread {
-        public void run(){
-            while(true){
+		else if(count_activity==1)
+		{
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) 
+		{
+		if(count2==0)
+			count2++;
+		else
+		{
+			people1.live = true;
+			people2.live = true;
+			people1.hitlength = 0;
+			people2.hitlength = 0;
+			judgeDeath = 0;
+			count2--;
+		}
+		}
+		}
+		}
+	class PaintThread extends Thread 
+	{
+        public void run()
+        {
+            while(true)
+            {
                 repaint();
-                try {
+                try 
+                {
                     Thread.sleep(30); //1s = 1000ms
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e)
+				{
                     e.printStackTrace();
                 }   
             }
         }
     } 
-	class KeyMonitor extends KeyAdapter {
+	class KeyMonitor extends KeyAdapter 
+	{
         @Override
         public void keyPressed(KeyEvent e) {
             people1.addDirection(e);
             people2.addDirection(e);	
-            if(count_activity==0)
+            if(count_activity==0||count_activity==1)
             count(e);
         }
         @Override
@@ -130,7 +173,7 @@ public class GameFrame1 extends Frame {
         }
     }
 	public void CreateFrame() {
-		setTitle("戴东晖的拳皇游戏");
+		setTitle("Sampson's Game");
 		setSize(800,500);
 		setVisible(true);
 		setLocation(200,200);	
